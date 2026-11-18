@@ -1,1 +1,244 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joyce once held</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Palatino', serif;
+    background: #1c1616;
+    color: #f5e8e0;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 20% 80%, rgba(180, 100, 100, 0.08) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(200, 150, 130, 0.06) 0%, transparent 40%);
+  }
+  header {
+    text-align: center;
+    padding: 3.5rem 1rem 1.5rem;
+  }
+  h1 {
+    font-size: 2.6rem;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #f8e0d4;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  }
+  .subtitle {
+    margin-top: 0.6rem;
+    font-size: 1rem;
+    color: #c9a89a;
+    font-style: italic;
+    letter-spacing: 0.05em;
+  }
+  .viewer {
+    max-width: 720px;
+    margin: 1rem auto 2rem;
+    position: relative;
+    background: #241c1c;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(200, 160, 140, 0.15);
+  }
+  .viewer img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 75vh;
+    object-fit: contain;
+    background: #1a1212;
+    cursor: grab;
+    transition: opacity 0.2s;
+  }
+  .viewer img:active { cursor: grabbing; }
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1rem;
+    background: rgba(30, 20, 20, 0.9);
+  }
+  button {
+    background: #3a2a2a;
+    color: #f0d8cc;
+    border: 1px solid #5a4040;
+    padding: 0.6rem 1.4rem;
+    border-radius: 30px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  button:hover {
+    background: #4a3535;
+    border-color: #c9a090;
+    color: #fff;
+  }
+  .angle {
+    font-size: 0.9rem;
+    color: #d4b8aa;
+    min-width: 80px;
+    text-align: center;
+  }
+  .caption-box {
+    max-width: 720px;
+    margin: 0 auto 3rem;
+    padding: 1.4rem 1.8rem;
+    background: rgba(40, 28, 28, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(200, 160, 140, 0.2);
+    text-align: center;
+  }
+  .caption-box p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #e8d4c8;
+  }
+  .hint {
+    text-align: center;
+    color: #8a7068;
+    font-size: 0.85rem;
+    margin-bottom: 2rem;
+  }
+  .zoom-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 6, 6, 0.92);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+  }
+  .zoom-modal img {
+    max-width: 95%;
+    max-height: 95%;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: #6a5550;
+    font-size: 0.8rem;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Joyce once held</h1>
+  <p class="subtitle">Turn her gently · every angle remembered</p>
+</header>
+
+<div class="viewer" id="viewer">
+  <img id="mainImage" src="images/IMG_4664.jpg" alt="Joyce">
+  <div class="controls">
+    <button id="prev">← Prev</button>
+    <span class="angle" id="angleLabel">1 / 15</span>
+    <button id="next">Next →</button>
+    <button id="zoomBtn">Zoom</button>
+  </div>
+</div>
+
+<div class="caption-box">
+  <p id="caption">Drag left or right on the image, or use the arrows, to turn her. Click Zoom for high resolution.</p>
+</div>
+
+<p class="hint">Drag across the photo to spin · Double-click or Zoom for detail</p>
+
+<div class="zoom-modal" id="zoomModal">
+  <img id="zoomImage" src="" alt="">
+</div>
+
+<footer>Joyce once held · private collection</footer>
+
+<script>
+const images = [
+  "images/IMG_4664.jpg",
+  "images/IMG_4665.jpg",
+  "images/IMG_4666.jpg",
+  "images/IMG_4667.jpg",
+  "images/IMG_4668.jpg",
+  "images/IMG_4669.jpg",
+  "images/IMG_4670.jpg",
+  "images/IMG_4671.jpg",
+  "images/IMG_4672.jpg",
+  "images/IMG_4673.jpg",
+  "images/IMG_4674.jpg",
+  "images/IMG_4675.jpg",
+  "images/IMG_4676.jpg",
+  "images/IMG_4677.jpg",
+  "images/IMG_4678.jpg"
+];
+
+const captions = [
+  "Side view. Honey I practice standing tall here.",
+  "Another angle, quiet and still.",
+  "The light finds her differently from here.",
+  "Turned slightly, looking back.",
+  "Fuller view of the pose.",
+  "Closer in on the details.",
+  "From this side the chain catches the light.",
+  "High resolution moment.",
+  "Gentle turn.",
+  "Looking over the shoulder.",
+  "Seated, grounded.",
+  "The choker and chain in view.",
+  "Soft expression.",
+  "Almost full circle.",
+  "Last angle of the turn."
+];
+
+let current = 0;
+const img = document.getElementById('mainImage');
+const label = document.getElementById('angleLabel');
+const cap = document.getElementById('caption');
+const modal = document.getElementById('zoomModal');
+const zoomImg = document.getElementById('zoomImage');
+
+function show(i) {
+  current = (i + images.length) % images.length;
+  img.src = images[current];
+  label.textContent = (current + 1) + ' / ' + images.length;
+  cap.textContent = captions[current] || "A quiet angle.";
+}
+
+document.getElementById('prev').onclick = () => show(current - 1);
+document.getElementById('next').onclick = () => show(current + 1);
+
+let startX = 0;
+let dragging = false;
+img.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; });
+img.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const dx = e.clientX - startX;
+  if (Math.abs(dx) > 40) {
+    show(current + (dx > 0 ? -1 : 1));
+    startX = e.clientX;
+  }
+});
+document.addEventListener('mouseup', () => dragging = false);
+
+img.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+img.addEventListener('touchmove', e => {
+  const dx = e.touches[0].clientX - startX;
+  if (Math.abs(dx) > 50) {
+    show(current + (dx > 0 ? -1 : 1));
+    startX = e.touches[0].clientX;
+  }
+});
+
+document.getElementById('zoomBtn').onclick = () => {
+  zoomImg.src = img.src;
+  modal.style.display = 'flex';
+};
+img.ondblclick = () => document.getElementById('zoomBtn').click();
+modal.onclick = () => modal.style.display = 'none';
+
+show(0);
+</script>
+</body>
+</html>
